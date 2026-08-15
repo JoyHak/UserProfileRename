@@ -430,11 +430,24 @@ function Invoke-Logoff {
         $Mutex.Close()
     }
         
-    if (Test-Confirm 'Sign out now?') {
-        Write-Host "Please wait..." -f Cyan
-        Start-Process logoff.exe -Wait 
-    } else {
-        exit 0    
+    if (-not (Test-Confirm 'Sign out now?')) {
+        exit 0
+    }
+    
+    Write-Host "Please wait..." -f Cyan
+    
+    try {
+        Get-CimInstance -ClassName Win32_OperatingSystem | 
+            Invoke-CimMethod `
+                -MethodName Win32Shutdown `
+                -Arguments @{Flags = 0} |
+            Out-Null
+    } catch {
+        try {
+            Start-Process logoff.exe -Wait -ErrorAction Stop
+        } catch {
+            Terminate 'Please sign out manually...' -ExitCode 1
+        }
     }
 }
 
