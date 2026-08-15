@@ -94,7 +94,7 @@ if ([string]::IsNullOrWhiteSpace($ToolsRoot)) {
 
 $BackupDir           = Join-Path $ToolsRoot 'ProfileBackup'
 $CleanupScriptPath   = Join-Path $ToolsRoot 'Remove-TempAdminArtifacts.ps1'
-$ConfigFile          = Join-Path $BackupDir 'RenameUserProfile.json'
+$ConfigFile          = Join-Path $env:SystemDrive 'RenameUserProfile.json'
 
 if (Test-Path -Literal $ConfigFile) {
     $Config = [PSCustomObject](Get-Content -Path $ConfigFile -Raw | ConvertFrom-Json)
