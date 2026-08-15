@@ -321,12 +321,16 @@ function New-TempAdminAccount {
         -Member $TempAdmin |
         Out-Null
 
-    # Disable password
-    $user = [ADSI]"WinNT://./$TempAdmin,User"
-    $user.PasswordExpired = 0
-    $user.SetInfo()
-
-    Write-Host "Created temporary admin $TempAdmin" -f Green
+    try {
+        $user = [ADSI]"WinNT://./$TempAdmin,User"
+        $user.PasswordExpired = 0
+        $user.SetInfo()
+        Write-Host "Created temporary admin $TempAdmin" -f Green
+    } catch {
+        Write-Host "Unable to disable password for temporary admin." -f DarkGray
+        Write-Host "Please be prepared to create a password when you log into " -f Green -n
+        Write-Host $TempAdmin -f Yellow
+    }
 }
 
 function Disable-AutoAdminLogon {
