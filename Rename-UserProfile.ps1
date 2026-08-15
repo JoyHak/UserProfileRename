@@ -334,9 +334,11 @@ function New-TempAdminAccount {
 }
 
 function Disable-AutoAdminLogon {
-    $Config.Add('AutoAdminLogon',    (Get-RegistryValue $WinlogonPath AutoAdminLogon))
-    $Config.Add('UserSwitchEnabled', (Get-RegistryValue $UserSwitchPath Enabled))
-
+    try {
+        $Config.Add('AutoAdminLogon',    (Get-RegistryValue $WinlogonPath AutoAdminLogon))
+        $Config.Add('UserSwitchEnabled', (Get-RegistryValue $UserSwitchPath Enabled))
+    } catch {}
+    
     Set-ItemProperty `
         -Path $WinlogonPath `
         -Name AutoAdminLogon `
